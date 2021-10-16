@@ -18,6 +18,10 @@ LANGUAGE_DIST = {
     "EXIT": {
         "JP": "閉じる",
         "US": "Exit"
+    },
+    "OPTIONS": {
+        "JP": "設定",
+        "US": "Options..."
     }
 }
 
