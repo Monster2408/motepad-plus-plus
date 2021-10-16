@@ -7,10 +7,9 @@ import sys
 
 INITIAL_VALUE = "INITIAL_VALUE"
 
-SETTINGS_KEY = [
-    "language", # 言語設定
-]
-SETTINGS_LANG = INITIAL_VALUE
+SETTINGS_VALUE = {
+    "language": INITIAL_VALUE
+}
 
 def resource_path(relative_path):
     if hasattr(sys, '_MEIPASS'):
@@ -28,16 +27,22 @@ def updateOption(key: str, value: str):
     with open('./user/options.yml', 'r') as file:
         obj = yaml.safe_load(file)
     obj[f'{key}'] = value
+    SETTINGS_VALUE[f'{key}'] = value
     with codecs.open('./user/options.yml', 'w', 'utf-8') as file:
         yaml.dump(obj, file, encoding='utf-8', allow_unicode=True)
 
 def get(key: str) -> str:
     checkUserFile('options.yml')
-    with open('./user/options.yml', 'r') as file:
-        obj = yaml.safe_load(file)
-        if not obj[f'{key}']:
-            return 'null'
-        return obj[f'{key}']
+    global SETTINGS_VALUE
+    if not SETTINGS_VALUE[f'{key}']:
+        return None
+    if SETTINGS_VALUE[f'{key}'] == INITIAL_VALUE:
+        with open('./user/options.yml', 'r') as file:
+            obj = yaml.safe_load(file)
+            if not obj[f'{key}']:
+                return None
+            SETTINGS_VALUE[f'{key}'] = obj[f'{key}']
+    return SETTINGS_VALUE[f'{key}']
 
 def getLang() -> str:
     return get("language")

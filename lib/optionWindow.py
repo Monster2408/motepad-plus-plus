@@ -6,8 +6,6 @@ from lib import settings
 from lib import Var
 from lib import MainWindow
 
-
-
 def createOptionWindow():
     if Var.optionWindow == None or not Var.optionWindow.winfo_exists():
         Var.optionWindow = tk.Toplevel(Var.root)

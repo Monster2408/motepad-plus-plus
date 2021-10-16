@@ -36,7 +36,15 @@ LANGUAGE_DIST = {
     "SET_OPTIONS": {
         "JP": "設定反映",
         "US": "Reflect"
-    }
+    },
+    "NEW_FILE_NAME": {
+        "JP": "新規文書",
+        "US": "New File "
+    },
+    "CREATE_NEW_FILE": {
+        "JP": "新規作成",
+        "US": "New"
+    },
 }
 
 
