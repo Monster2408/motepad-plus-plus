@@ -6,8 +6,7 @@ from lib import settings
 # defaultWidth = 1280
 # defaultHeight = 720
 
-EDITORDISPLAYNAME = "MotePad++"
-
+""" ここからが関数群 """
 def open_text():
     global EDITORDISPLAYNAME
     typ = [(f'{LANG.get("TEXT_FILES", settings.get("language"))}', '*.txt')]
@@ -18,12 +17,14 @@ def open_text():
     with open(filepath, "r", encoding="utf-8") as open_file:
         text = open_file.read()
         text_editor.insert(tk.END, text)
-    root.title(f'{LANG.get("TEXT_FILES", settings.get("language"))} - {filepath}')
+    root.title(
+        f'{LANG.get("TEXT_FILES", settings.get("language"))} - {filepath}')
+
 
 def file_save():
     global EDITORDISPLAYNAME
     typ = [(f'{LANG.get("TEXT_FILES", settings.get("language"))}', '*.txt')]
-    filepath = asksaveasfilename(defaultextension='txt',filetypes=typ)
+    filepath = asksaveasfilename(defaultextension='txt', filetypes=typ)
     if not filepath:
         return
     with open(filepath, 'w') as save_file:
@@ -31,16 +32,34 @@ def file_save():
         save_file.write(text)
     root.title(f"{EDITORDISPLAYNAME} - {filepath}")
 
+
 def setFileMenu():
     # ファイルメニュー
-    filemenu = tk.Menu(menubar, tearoff = 0)
-    menubar.add_cascade(label = f'{LANG.get("FILE", settings.get("language"))}', menu = filemenu)
+    filemenu = tk.Menu(menubar, tearoff=0)
+    menubar.add_cascade(
+        label=f'{LANG.get("FILE", settings.get("language"))}', menu=filemenu)
     # ～内容
-    filemenu.add_command(label = f'{LANG.get("OPEN_FILE", settings.get("language"))}', command=open_text)
-    filemenu.add_command(label = f'{LANG.get("SAVE_NEW_FILE", settings.get("language"))}', command=file_save)
+    filemenu.add_command(
+        label=f'{LANG.get("OPEN_FILE", settings.get("language"))}', command=open_text)
+    filemenu.add_command(
+        label=f'{LANG.get("SAVE_NEW_FILE", settings.get("language"))}', command=file_save)
     # セパレーター
     filemenu.add_separator()
-    filemenu.add_command(label = f'{LANG.get("EXIT", settings.get("language"))}', command = lambda: root.destroy())
+    filemenu.add_command(
+        label=f'{LANG.get("EXIT", settings.get("language"))}', command=lambda: root.destroy())
+
+
+def setOptionMenu():
+    # 設定メニュー
+    filemenu = tk.Menu(menubar, tearoff=0)
+    menubar.add_cascade(
+        label=f'{LANG.get("OPTIONS", settings.get("language"))}', menu=filemenu)
+    # ～内容
+    filemenu.add_command(
+        label=f'{LANG.get("LANGUAGE_OPTION_MENU", settings.get("language"))}')
+
+EDITORDISPLAYNAME = "MotePad++"
+num_flag = 0
 
 root = tk.Tk()
 root.title(f'{EDITORDISPLAYNAME}')
@@ -49,7 +68,9 @@ root.rowconfigure(0, minsize=500, weight=1)
 root.columnconfigure(1, minsize=500, weight=1)
 
 text_editor = tk.Text(root)
+linenumber_frame = tk.Frame(root, relief=tk.FLAT, bd=2, width=40)
 
+linenumber_frame.grid(row=0, column=0, sticky="ns")
 text_editor.grid(row=0, column=1, sticky='nsew')
 
 # メニューバーの作成
@@ -57,7 +78,6 @@ menubar = tk.Menu(root)
 root.configure(menu = menubar)
 
 setFileMenu()
-
-
+setOptionMenu()
 
 root.mainloop()

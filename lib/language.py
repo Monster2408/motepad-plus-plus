@@ -22,6 +22,10 @@ LANGUAGE_DIST = {
     "OPTIONS": {
         "JP": "設定",
         "US": "Options..."
+    },
+    "LANGUAGE_OPTION_MENU": {
+        "JP": "言語設定",
+        "US": "Language"
     }
 }
 
