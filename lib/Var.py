@@ -9,3 +9,6 @@ text_editor = None
 scrollbar = None
 linenumber_frame = None 
 menubar = None
+
+
+settings_temp_language = None

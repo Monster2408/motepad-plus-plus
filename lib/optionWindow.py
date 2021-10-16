@@ -33,16 +33,14 @@ def createOptionWindow():
         def language_selected(event):
             keys = [k for k, v in LANG.getLangDist().items() if v == f'{combobox.get()}']
             if len(keys) > 0:
-                settings.updateOption("language", keys[0])
-                Var.optionWindow.title(f"{Var.EDITORDISPLAYNAME} - {LANG.get('OPTIONS')}")
-                restartButton["text"] = LANG.get('SET_OPTIONS')
+                Var.settings_temp_language = keys[0]
+                restartButton["text"] = LANG.get('SET_OPTIONS', keys[0])
         Var.optionWindow.bind("<<ComboboxSelected>>", language_selected)
 
 def clearVariables():
     Var.optionWindow = None
     Var.selectedLangValue = None
-
-def refreshVariables():
-    Var.selectedLangValue = StringVar()
-
-    Var.selectedLangValue.set(LANG.get('LANG'))
+    
+def setVariables():
+    if Var.settings_temp_language != None:
+        settings.updateOption("language", Var.settings_temp_language)

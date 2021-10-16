@@ -93,12 +93,14 @@ def start():
 
     Var.root.mainloop()
 
-def restart():
+def restart(): # // TODO いいえを選択すると再設定不可になる
     # メッセージボックス（はい・いいえ） 
     ret = messagebox.askyesno('確認', 'ウィンドウを閉じますか？')
     if ret == True:
         OpWin.clearVariables()
+        OpWin.setVariables()
         Var.root.destroy()
         start()
     else:
         Var.optionWindow.destroy()
+        OpWin.clearVariables()

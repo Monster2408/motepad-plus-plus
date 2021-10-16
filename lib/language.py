@@ -35,14 +35,15 @@ LANGUAGE_DIST = {
     },
     "SET_OPTIONS": {
         "JP": "設定反映",
-        "US": "設定反映aaa"
+        "US": "Reflect"
     }
 }
 
 
-def get(key: str):
+def get(key: str, lang=None):
     global LANGUAGE_DIST
-    lang = settings.getLang()
+    if lang == None:
+        lang = settings.getLang()
     if not LANGUAGE_DIST.get(key):
         return "null"
     dist = LANGUAGE_DIST.get(key)
