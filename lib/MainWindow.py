@@ -9,7 +9,7 @@ import os
 from lib import language as LANG
 from lib import Var
 from lib import optionWindow as OpWin
-from lib import NotePadPlusPlus as NPPP
+from lib import MotePadPlusPlus as MPPP
 from lib import settings
 from lib import ShortCut
 
@@ -86,8 +86,8 @@ def start():
     Var.root.iconbitmap(default=iconfile)
     
     Var.root.geometry('400x300')
-    Var.notebook = ttk.Notebook(Var.root)
-    Var.notebook.pack(fill='both',expand=1)
+    Var.notebook = MPPP.CustomNotebook(width=400, height=300)
+    Var.notebook.pack(side="top", fill="both", expand=True)
     Var.tframes = []
     Var.fnames = []
     add_tab()
@@ -96,14 +96,14 @@ def start():
     Var.menubar = tk.Menu(Var.root)
     Var.root.configure(menu = Var.menubar)
     
-    slideFrame = ttk.Frame(Var.root)
-    slideFrame.place(relx=1.0, x=0, y=1, anchor=tk.NE)
-    leftArrow = ttk.Label(slideFrame, text="\u25c0")
-    leftArrow.bind("<1>",_leftSlide)
-    leftArrow.pack(side=tk.LEFT)
-    rightArrow = ttk.Label(slideFrame, text=" \u25b6")
-    rightArrow.bind("<1>",_rightSlide)
-    rightArrow.pack(side=tk.RIGHT)
+    # slideFrame = ttk.Frame(Var.root)
+    # slideFrame.place(relx=1.0, x=0, y=1, anchor=tk.NE)
+    # leftArrow = ttk.Label(slideFrame, text="\u25c0")
+    # leftArrow.bind("<1>",_leftSlide)
+    # leftArrow.pack(side=tk.LEFT)
+    # rightArrow = ttk.Label(slideFrame, text=" \u25b6")
+    # rightArrow.bind("<1>",_rightSlide)
+    # rightArrow.pack(side=tk.RIGHT)
     # notebookContent.bind( "<Configure>", _resetSlide)
     
     setFileMenu()
@@ -166,12 +166,12 @@ def start2():
 
     Var.root.mainloop()
         
-def add_tab(fname = None): # // TODO タブを閉じるボタン作成必須
+def add_tab(fname = None): 
     """新規作成用
 
     Args:
         fname (string): [description]. ファイル名またはファイルパス
-    """    
+    """
     if fname == None:
         new_file_num = 1
         if len(Var.fnames) > 0:
@@ -180,7 +180,7 @@ def add_tab(fname = None): # // TODO タブを閉じるボタン作成必須
                     break
                 new_file_num += 1
         fname = f'{LANG.get("NEW_FILE_NAME")}{str(new_file_num)}'
-    tframe=NPPP.NotePadPlusPlus(Var.notebook)
+    tframe=MPPP.CustomFrame(Var.notebook)
     Var.tframes.append(tframe)
     if os.path.isfile(fname):
         f=open(fname,'r')
@@ -190,6 +190,5 @@ def add_tab(fname = None): # // TODO タブを閉じるボタン作成必須
             tframe.text.insert('end',line)
     Var.fnames.append(fname)
     title=os.path.basename(fname)
-    prof_img = PhotoImage(file=settings.resource_path("close_black.png"))
-    Var.notebook.add(tframe,text=title,image=prof_img, compound='right')
+    Var.notebook.add(tframe,text=title)
     Var.notebook.select(Var.notebook.tabs()[Var.notebook.index('end')-1])
