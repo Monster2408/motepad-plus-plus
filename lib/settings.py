@@ -38,3 +38,6 @@ def get(key: str) -> str:
         if not obj[f'{key}']:
             return 'null'
         return obj[f'{key}']
+
+def getLang() -> str:
+    return get("language")
