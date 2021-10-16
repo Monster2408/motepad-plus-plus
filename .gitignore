@@ -3,4 +3,4 @@ build.bat
 build.py
 dist
 build
-.spec
+*.spec
