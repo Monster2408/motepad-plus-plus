@@ -5,6 +5,7 @@ from PIL import ImageTk
 
 from lib import Var
 from lib import MainWindow
+from lib import settings
 
 class CustomNotebook(ttk.Notebook):
     """A ttk Notebook with close buttons on each tab"""
@@ -123,7 +124,3 @@ class CustomFrame(tk.Frame):
         self.text = text
         self.x_sb = x_sb
         self.y_sb = y_sb
-
-class CustomToolBar(tk.Frame):
-    def __init__(self, master = None):
-        super().__init__(master)

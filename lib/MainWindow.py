@@ -1,7 +1,8 @@
 import tkinter as tk
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 from tkinter import messagebox
-import sys
+from tkinter import filedialog
+from PIL import ImageTk
 import os
 
 from lib import language as LANG
@@ -62,6 +63,28 @@ def setOptionMenu():
     filemenu.add_command(
         label=f'{LANG.get("OPTIONS")}', command=OpWin.createOptionWindow)
     
+def setToolBar():
+    #---------------------------------------
+    #  ツールバー
+    #---------------------------------------
+    # ツールバー用Frame
+    frame_toolbar = tk.Frame(Var.root, relief = tk.FLAT, bd = 2)
+    # ツールバーをウィンドの上に配置
+    frame_toolbar.pack(side = tk.TOP, fill = tk.X)
+    
+    # ボタン
+    # ファイルを開く
+    ico_open_file = ImageTk.PhotoImage(file = settings.resource_path("icon_openFile.bmp"))
+    btn_open_file = tk.Button(frame_toolbar, command = open_text, image = ico_open_file)
+    # 保存
+    ico_save = ImageTk.PhotoImage(file = settings.resource_path("icon_saveFile.bmp"))
+    btn_save = tk.Button(frame_toolbar, command = file_save, image = ico_save)
+    
+    #-------------------------
+    # ボタンをフレームに配置
+    btn_open_file.pack(side = tk.LEFT, padx = (5, 0)) # 左側だけ隙間を空ける
+    btn_save.pack(side = tk.LEFT)
+    
 def start():
     """メインウインドウ作成用関数
     
@@ -73,12 +96,27 @@ def start():
     iconfile = settings.resource_path("MotePad++_icon.ico")
     Var.root.iconbitmap(default=iconfile)
     
-    Var.root.geometry('400x300')
-    Var.notebook = MPPP.CustomNotebook(width=400, height=300)
+    Var.root.geometry(f'{Var.DEFAULT_WIDTH}x{Var.DEFAULT_HEIGHT}')
+    
+    setToolBar()
+    
+    Var.notebook = MPPP.CustomNotebook(height=Var.DEFAULT_HEIGHT, width=Var.DEFAULT_WIDTH)
     Var.notebook.pack(side="top", fill="both", expand=True)
     Var.tframes = []
     Var.fnames = []
     add_tab()
+    
+    #---------------------------------------
+    #  ステータスバー
+    #---------------------------------------
+    # ステータスバー用Frame
+    frame_statusbar = tk.Frame(Var.root, relief = tk.SUNKEN, bd = 2)
+    # ステータスラベル
+    label = tk.Label(frame_statusbar, text = "StatusLabel")
+    # ラベルをフレームに配置
+    label.pack(side = tk.LEFT)
+    # ステータスバーをウィンドの下に配置
+    frame_statusbar.pack(side = tk.BOTTOM, fill = tk.X)
     
     # メニューバーの作成
     Var.menubar = tk.Menu(Var.root)
