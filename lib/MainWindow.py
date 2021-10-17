@@ -1,8 +1,6 @@
 import tkinter as tk
-import tkinter.ttk as ttk
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 from tkinter import messagebox
-from tkinter import PhotoImage
 import sys
 import os
 
@@ -63,16 +61,6 @@ def setOptionMenu():
     # ～内容
     filemenu.add_command(
         label=f'{LANG.get("OPTIONS")}', command=OpWin.createOptionWindow)
-
-def _rightSlide(event):
-    if Var.tab_frame.winfo_width()>Var.notebook.winfo_width()-30:
-        if (Var.tframes.winfo_width()-(Var.tab_frame.winfo_width()+Var.tab_frame.winfo_x()))<=35:
-            Var.xLocation-=20
-            Var.tab_frame.place(x=Var.xLocation,y=0)
-def _leftSlide(event):
-    if not Var.notebook.winfo_x()== 0:
-        Var.xLocation+=20
-        Var.notebook.place(x=Var.xLocation,y=0)
     
 def start():
     """メインウインドウ作成用関数
@@ -96,30 +84,10 @@ def start():
     Var.menubar = tk.Menu(Var.root)
     Var.root.configure(menu = Var.menubar)
     
-    # slideFrame = ttk.Frame(Var.root)
-    # slideFrame.place(relx=1.0, x=0, y=1, anchor=tk.NE)
-    # leftArrow = ttk.Label(slideFrame, text="\u25c0")
-    # leftArrow.bind("<1>",_leftSlide)
-    # leftArrow.pack(side=tk.LEFT)
-    # rightArrow = ttk.Label(slideFrame, text=" \u25b6")
-    # rightArrow.bind("<1>",_rightSlide)
-    # rightArrow.pack(side=tk.RIGHT)
-    # notebookContent.bind( "<Configure>", _resetSlide)
-    
     setFileMenu()
     setOptionMenu()
     
-    Var.root.bind("<Control-q>", sys.exit)
-    Var.root.bind("<Control-Q>", sys.exit)
-    
-    Var.root.bind("<Control-w>", ShortCut.ctrl_w)
-    Var.root.bind("<Control-W>", ShortCut.ctrl_w)
-    
-    Var.root.bind("<Control-q>", sys.exit)
-    Var.root.bind("<Control-Q>", sys.exit)
-    
-    Var.root.bind("<Control-n>", ShortCut.ctrl_n)
-    Var.root.bind("<Control-N>", ShortCut.ctrl_n)
+    ShortCut.binds()
 
     Var.root.mainloop()
 
@@ -134,37 +102,6 @@ def restart():
     else:
         Var.optionWindow.destroy()
         OpWin.clearVariables()
-        
-def start2():
-    Var.root = tk.Tk()
-    Var.root.title(f'{Var.EDITORDISPLAYNAME}')
-    
-    iconfile = settings.resource_path("MotePad++_icon.ico")
-    Var.root.iconbitmap(default=iconfile)
-
-    Var.root.rowconfigure(0, minsize=500, weight=1)
-    Var.root.columnconfigure(1, minsize=500, weight=1)
-    
-    Var.text_editor = tk.Text(Var.root)
-    Var.linenumber_frame = tk.Frame(Var.root, relief=tk.FLAT, bd=2, width=40)
-    Var.tab_frame = tk.Frame(Var.root, relief=tk.FLAT, bd=2)
-
-    Var.scrollbar = tk.Scrollbar(Var.root, orient=tk.VERTICAL, command=Var.text_editor.yview)
-    Var.text_editor["yscrollcommand"] = Var.scrollbar.set
-
-    Var.scrollbar.grid(row=1, column=2, sticky=(tk.N, tk.S, tk.E))
-    Var.tab_frame.grid(row=0, sticky=(tk.W, tk.E))
-    Var.linenumber_frame.grid(row=1, column=0, sticky="ns")
-    Var.text_editor.grid(row=1, column=1, sticky='nsew')
-
-    # メニューバーの作成
-    Var.menubar = tk.Menu(Var.root)
-    Var.root.configure(menu = Var.menubar)
-
-    setFileMenu()
-    setOptionMenu()
-
-    Var.root.mainloop()
         
 def add_tab(fname = None): 
     """新規作成用

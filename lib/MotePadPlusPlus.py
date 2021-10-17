@@ -1,5 +1,10 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter import filedialog
+from PIL import ImageTk
+
+from lib import Var
+from lib import MainWindow
 
 class CustomNotebook(ttk.Notebook):
     """A ttk Notebook with close buttons on each tab"""
@@ -44,10 +49,17 @@ class CustomNotebook(ttk.Notebook):
 
         if self._active == index:
             self.forget(index)
+            frame = Var.tframes[index]
+            name = Var.fnames[index]
+            Var.tframes.remove(frame)
+            Var.fnames.remove(name)
             self.event_generate("<<NotebookTabClosed>>")
 
         self.state(["!pressed"])
         self._active = None
+        
+        if len(Var.tframes) < 1:
+            MainWindow.add_tab()
 
     def __initialize_custom_style(self):
         style = ttk.Style()
@@ -111,3 +123,7 @@ class CustomFrame(tk.Frame):
         self.text = text
         self.x_sb = x_sb
         self.y_sb = y_sb
+
+class CustomToolBar(tk.Frame):
+    def __init__(self, master = None):
+        super().__init__(master)

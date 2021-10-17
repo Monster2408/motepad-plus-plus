@@ -1,3 +1,5 @@
+import sys
+
 from lib import Var
 from lib import MainWindow
 
@@ -13,3 +15,16 @@ def ctrl_w(event):
         
 def ctrl_n(event):
     MainWindow.add_tab()
+    
+def binds():
+    Var.root.bind("<Control-q>", sys.exit)
+    Var.root.bind("<Control-Q>", sys.exit)
+    
+    Var.root.bind("<Control-w>", ctrl_w)
+    Var.root.bind("<Control-W>", ctrl_w)
+    
+    Var.root.bind("<Control-q>", sys.exit)
+    Var.root.bind("<Control-Q>", sys.exit)
+    
+    Var.root.bind("<Control-n>", ctrl_n)
+    Var.root.bind("<Control-N>", ctrl_n)
