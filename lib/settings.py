@@ -8,12 +8,19 @@ import sys
 INITIAL_VALUE = "INITIAL_VALUE"
 
 SETTINGS_VALUE = {
-    "language": INITIAL_VALUE
+    "language": INITIAL_VALUE, # 言語
+    "wrap": INITIAL_VALUE      # 折り返すかどうか
 }
 
 def resource_path(relative_path):
+    """ツールバーぼアイコンには必ず'icon_'とファイル名の冒頭につけてください
+    
+    ※デバッグ時に上手く表示されなくなります。
+    """    
     if hasattr(sys, '_MEIPASS'):
         return os.path.join(sys._MEIPASS, relative_path)
+    if relative_path.startswith("icon_"):
+        relative_path = "icon/"+relative_path
     return os.path.join(os.path.abspath("./resources/"), relative_path)
 
 def checkUserFile(filename: str):

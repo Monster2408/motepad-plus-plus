@@ -5,7 +5,7 @@ from PIL import ImageTk
 
 from lib import Var
 from lib import MainWindow
-from lib import settings
+from lib import DataVar
 
 class CustomNotebook(ttk.Notebook):
     """A ttk Notebook with close buttons on each tab"""
@@ -24,6 +24,7 @@ class CustomNotebook(ttk.Notebook):
 
         self.bind("<ButtonPress-1>", self.on_close_press, True)
         self.bind("<ButtonRelease-1>", self.on_close_release)
+        self.bind("<<NotebookTabChanged>>", self.on_change_select_tab)
 
     def on_close_press(self, event):
         """Called when the button is pressed over the close button"""
@@ -61,19 +62,23 @@ class CustomNotebook(ttk.Notebook):
         
         if len(Var.tframes) < 1:
             MainWindow.add_tab()
+            
+    def on_change_select_tab(self, event):
+        pass
 
     def __initialize_custom_style(self):
         style = ttk.Style()
         self.images = (
+            # 
             tk.PhotoImage("img_close", data='''
                 R0lGODlhCAAIAMIBAAAAADs7O4+Pj9nZ2Ts7Ozs7Ozs7Ozs7OyH+EUNyZWF0ZWQg
                 d2l0aCBHSU1QACH5BAEKAAQALAAAAAAIAAgAAAMVGDBEA0qNJyGw7AmxmuaZhWEU
                 5kEJADs=
-                '''),
-            tk.PhotoImage("img_closeactive", data='''
+            '''),
+            tk.PhotoImage("img_closehover", data='''
                 R0lGODlhCAAIAMIEAAAAAP/SAP/bNNnZ2cbGxsbGxsbGxsbGxiH5BAEKAAQALAAA
                 AAAIAAgAAAMVGDBEA0qNJyGw7AmxmuaZhWEU5kEJADs=
-                '''),
+            '''),
             tk.PhotoImage("img_closepressed", data='''
                 R0lGODlhCAAIAMIEAAAAAOUqKv9mZtnZ2Ts7Ozs7Ozs7Ozs7OyH+EUNyZWF0ZWQg
                 d2l0aCBHSU1QACH5BAEKAAQALAAAAAAIAAgAAAMVGDBEA0qNJyGw7AmxmuaZhWEU
@@ -83,7 +88,7 @@ class CustomNotebook(ttk.Notebook):
 
         style.element_create("close", "image", "img_close",
                             ("active", "pressed", "!disabled", "img_closepressed"),
-                            ("active", "!disabled", "img_closeactive"), border=8, sticky='')
+                            ("active", "!disabled", "img_closehover"), border=8, sticky='')
         style.layout("CustomNotebook", [("CustomNotebook.client", {"sticky": "nswe"})])
         style.layout("CustomNotebook.Tab", [
             ("CustomNotebook.tab", {

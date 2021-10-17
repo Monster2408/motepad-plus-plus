@@ -76,9 +76,11 @@ def setToolBar():
     # ファイルを開く
     ico_open_file = ImageTk.PhotoImage(file = settings.resource_path("icon_openFile.bmp"))
     btn_open_file = tk.Button(frame_toolbar, command = open_text, image = ico_open_file)
+    btn_open_file.image = ico_open_file
     # 保存
     ico_save = ImageTk.PhotoImage(file = settings.resource_path("icon_saveFile.bmp"))
     btn_save = tk.Button(frame_toolbar, command = file_save, image = ico_save)
+    btn_save.image = ico_save
     
     #-------------------------
     # ボタンをフレームに配置
