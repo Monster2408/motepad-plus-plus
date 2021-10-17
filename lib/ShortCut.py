@@ -3,15 +3,23 @@ import sys
 from lib import Var
 from lib import MainWindow
 
-def ctrl_w(event):
-    idx = Var.notebook.tabs().index(Var.notebook.select())
+
+def close_file(index = -1):
+    if index == -1:
+        index = Var.notebook.tabs().index(Var.notebook.select())
+    idx = index
     frame = Var.tframes[idx]
     name = Var.fnames[idx]
+    Var.notebook.forget(idx)
     Var.tframes.remove(frame)
     Var.fnames.remove(name)
-    frame.destroy()
+    # frame.destroy()
+    Var.notebook.event_generate("<<NotebookTabClosed>>")
     if len(Var.tframes) < 1:
         MainWindow.add_tab()
+
+def ctrl_w(event):
+    close_file()
         
 def ctrl_n(event):
     MainWindow.add_tab()

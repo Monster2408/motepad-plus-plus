@@ -5,7 +5,7 @@ from PIL import ImageTk
 
 from lib import Var
 from lib import MainWindow
-from lib import DataVar
+from lib import ShortCut
 
 class CustomNotebook(ttk.Notebook):
     """A ttk Notebook with close buttons on each tab"""
@@ -50,18 +50,10 @@ class CustomNotebook(ttk.Notebook):
         index = self.index("@%d,%d" % (event.x, event.y))
 
         if self._active == index:
-            self.forget(index)
-            frame = Var.tframes[index]
-            name = Var.fnames[index]
-            Var.tframes.remove(frame)
-            Var.fnames.remove(name)
-            self.event_generate("<<NotebookTabClosed>>")
+            ShortCut.close_file(index)
 
         self.state(["!pressed"])
         self._active = None
-        
-        if len(Var.tframes) < 1:
-            MainWindow.add_tab()
             
     def on_change_select_tab(self, event):
         pass

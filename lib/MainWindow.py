@@ -73,6 +73,10 @@ def setToolBar():
     frame_toolbar.pack(side = tk.TOP, fill = tk.X)
     
     # ボタン
+    # 新規作成
+    ico_new_file = ImageTk.PhotoImage(file = settings.resource_path("icon_newFile.bmp"))
+    btn_new_file = tk.Button(frame_toolbar, command = add_tab, image = ico_new_file)
+    btn_new_file.image = ico_new_file
     # ファイルを開く
     ico_open_file = ImageTk.PhotoImage(file = settings.resource_path("icon_openFile.bmp"))
     btn_open_file = tk.Button(frame_toolbar, command = open_text, image = ico_open_file)
@@ -81,11 +85,17 @@ def setToolBar():
     ico_save = ImageTk.PhotoImage(file = settings.resource_path("icon_saveFile.bmp"))
     btn_save = tk.Button(frame_toolbar, command = file_save, image = ico_save)
     btn_save.image = ico_save
+    # ファイル閉じる(留意事項README.mdにありんす)
+    ico_close = ImageTk.PhotoImage(file = settings.resource_path("icon/closeFile.bmp"))
+    btn_close = tk.Button(frame_toolbar, command = ShortCut.close_file, image = ico_close)
+    btn_close.image = ico_close
     
     #-------------------------
     # ボタンをフレームに配置
-    btn_open_file.pack(side = tk.LEFT, padx = (5, 0)) # 左側だけ隙間を空ける
+    btn_new_file.pack(side = tk.LEFT, padx = (5, 0)) # 左側だけ隙間を空ける
+    btn_open_file.pack(side = tk.LEFT) 
     btn_save.pack(side = tk.LEFT)
+    btn_close.pack(side = tk.LEFT)
     
 def setStatusBar():
     #---------------------------------------

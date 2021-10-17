@@ -1,4 +1,5 @@
-# MotePad++
+<h1 align="center"><s>　　</s> MotePad++ <s>　　</s></h1>
+
 ## やることリスト
 ##### タブ
 - [x] タブを閉じるボタン作成
