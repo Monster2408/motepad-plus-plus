@@ -6,3 +6,4 @@ build
 user
 *.spec
 test.py
+git-hide_*
