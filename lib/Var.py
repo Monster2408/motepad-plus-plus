@@ -1,28 +1,21 @@
-EDITORDISPLAYNAME = "MotePad++"
-num_flag = 0
+# 雑種
 optionWindow = None
 selectedLangValue = None
 root = None
-text_editor = None
-scrollbar = None
-linenumber_frame = None 
-tab_frame = None
 menubar = None
 
-toolbarFrame = None
-mainFrame = None
-
-
-settings_temp_language = None
-
-xLocation = 0
-
-
+# タブ機能用の変数
 tframes = None
 fnames = None
 notebook = None
 
-clipboard = None
+# 設定データを保存する用のもの
+# 毎度毎度，ファイルから読み取るのはバカだと思ってしまう癖ありんす
+settings_temp_language = None
 
+# 初期値(pythonってfinal宣言あるんかな...)
 DEFAULT_WIDTH = 1280
 DEFAULT_HEIGHT = 720
+EDITORDISPLAYNAME = "MotePad++"
+
+# statusLabel = None

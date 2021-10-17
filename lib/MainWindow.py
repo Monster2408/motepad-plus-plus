@@ -85,6 +85,19 @@ def setToolBar():
     btn_open_file.pack(side = tk.LEFT, padx = (5, 0)) # 左側だけ隙間を空ける
     btn_save.pack(side = tk.LEFT)
     
+def setStatusBar():
+    #---------------------------------------
+    #  ステータスバー
+    #---------------------------------------
+    # ステータスバー用Frame
+    frame_statusbar = tk.Frame(Var.root, relief = tk.SUNKEN, bd = 2)
+    # ステータスラベル
+    label = tk.Label(frame_statusbar, text = "StatusLabel")
+    # ラベルをフレームに配置
+    label.pack(side = tk.LEFT)
+    # ステータスバーをウィンドの下に配置
+    frame_statusbar.pack(side = tk.BOTTOM, fill = tk.X)
+    
 def start():
     """メインウインドウ作成用関数
     
@@ -99,24 +112,13 @@ def start():
     Var.root.geometry(f'{Var.DEFAULT_WIDTH}x{Var.DEFAULT_HEIGHT}')
     
     setToolBar()
+    setStatusBar()
     
     Var.notebook = MPPP.CustomNotebook(height=Var.DEFAULT_HEIGHT, width=Var.DEFAULT_WIDTH)
-    Var.notebook.pack(side="top", fill="both", expand=True)
+    Var.notebook.pack(fill="both", expand=True)
     Var.tframes = []
     Var.fnames = []
     add_tab()
-    
-    #---------------------------------------
-    #  ステータスバー
-    #---------------------------------------
-    # ステータスバー用Frame
-    frame_statusbar = tk.Frame(Var.root, relief = tk.SUNKEN, bd = 2)
-    # ステータスラベル
-    label = tk.Label(frame_statusbar, text = "StatusLabel")
-    # ラベルをフレームに配置
-    label.pack(side = tk.LEFT)
-    # ステータスバーをウィンドの下に配置
-    frame_statusbar.pack(side = tk.BOTTOM, fill = tk.X)
     
     # メニューバーの作成
     Var.menubar = tk.Menu(Var.root)
