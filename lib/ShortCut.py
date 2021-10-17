@@ -1,8 +1,10 @@
 import sys
+from tkinter.filedialog import askopenfilename, asksaveasfilename
+import tkinter as tk
 
 from lib import Var
 from lib import MainWindow
-
+from lib import language as LANG
 
 def close_file(index = -1):
     if index == -1:
@@ -17,6 +19,25 @@ def close_file(index = -1):
     Var.notebook.event_generate("<<NotebookTabClosed>>")
     if len(Var.tframes) < 1:
         MainWindow.add_tab()
+
+def open_text():
+    typ = [(f'{LANG.get("TEXT_FILES")}', '*.txt')]
+    filepath = askopenfilename(filetypes=typ)
+    if not filepath:
+        return
+    MainWindow.add_tab(filepath)
+
+def file_save():
+    typ = [(f'{LANG.get("TEXT_FILES")}', '*.txt')]
+    idx = Var.notebook.tabs().index(Var.notebook.select())
+    tframe = Var.tframes[idx]
+    fname = Var.fnames[idx]
+    filepath = asksaveasfilename(defaultextension='txt', filetypes=typ, initialfile=fname)
+    if not filepath:
+        return
+    with open(filepath, 'w') as save_file:
+        text = tframe.text.get('1.0', tk.END)
+        save_file.write(text)
 
 def ctrl_w(event):
     close_file()

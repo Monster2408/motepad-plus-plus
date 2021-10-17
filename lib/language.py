@@ -21,7 +21,7 @@ LANGUAGE_DIST = {
         "JP": "名前を受けて保存",
         "US": "Save"
     },
-    "EXIT": {
+    "EXIT": { # ソフトを閉じる
         "JP": "閉じる",
         "US": "Exit"
     },
@@ -37,13 +37,21 @@ LANGUAGE_DIST = {
         "JP": "設定反映",
         "US": "Reflect"
     },
-    "NEW_FILE_NAME": {
+    "NEW_FILE_NAME": { # 新規ファイル名
         "JP": "新規文書",
         "US": "New File "
     },
-    "CREATE_NEW_FILE": {
+    "CREATE_NEW_FILE": { # 新規ファイル作成メニュー名(ツールチップにも使用)
         "JP": "新規作成",
         "US": "New"
+    },
+    "SAVE_FILE": { 
+        "JP": "上書き保存",
+        "US": "Save"
+    },
+    "CLOSE": { # ファイルを閉じる
+        "JP": "閉じる",
+        "US": "Close"
     },
 }
 

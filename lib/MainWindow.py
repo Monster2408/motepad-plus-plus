@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 from tkinter import messagebox
-from tkinter import filedialog
 from PIL import ImageTk
 import os
 
@@ -13,26 +12,6 @@ from lib import settings
 from lib import ShortCut
 
 """ ここからが関数群 """
-def open_text():
-    typ = [(f'{LANG.get("TEXT_FILES")}', '*.txt')]
-    filepath = askopenfilename(filetypes=typ)
-    if not filepath:
-        return
-    add_tab(filepath)
-
-def file_save():
-    typ = [(f'{LANG.get("TEXT_FILES")}', '*.txt')]
-    idx = Var.notebook.tabs().index(Var.notebook.select())
-    tframe = Var.tframes[idx]
-    fname = Var.fnames[idx]
-    filepath = asksaveasfilename(defaultextension='txt', filetypes=typ, initialfile=fname)
-    if not filepath:
-        return
-    with open(filepath, 'w') as save_file:
-        text = tframe.text.get('1.0', tk.END)
-        save_file.write(text)
-
-
 def setFileMenu():
     """ファイルメニュー作成用関数
     """    
@@ -44,9 +23,9 @@ def setFileMenu():
     filemenu.add_command(
         label=f'{LANG.get("CREATE_NEW_FILE")}', command=add_tab)
     filemenu.add_command(
-        label=f'{LANG.get("OPEN_FILE")}', command=open_text)
+        label=f'{LANG.get("OPEN_FILE")}', command=MPPP.open_text)
     filemenu.add_command(
-        label=f'{LANG.get("SAVE_NEW_FILE")}', command=file_save)
+        label=f'{LANG.get("SAVE_NEW_FILE")}', command=MPPP.file_save)
     # セパレーター
     filemenu.add_separator()
     filemenu.add_command(
@@ -77,18 +56,22 @@ def setToolBar():
     ico_new_file = ImageTk.PhotoImage(file = settings.resource_path("icon/newFile.bmp"))
     btn_new_file = tk.Button(frame_toolbar, command = add_tab, image = ico_new_file)
     btn_new_file.image = ico_new_file
+    MPPP.CreateToolTip(btn_new_file, LANG.get("CREATE_NEW_FILE"))
     # ファイルを開く
     ico_open_file = ImageTk.PhotoImage(file = settings.resource_path("icon/openFile.bmp"))
-    btn_open_file = tk.Button(frame_toolbar, command = open_text, image = ico_open_file)
+    btn_open_file = tk.Button(frame_toolbar, command = MPPP.open_text, image = ico_open_file)
     btn_open_file.image = ico_open_file
+    MPPP.CreateToolTip(btn_open_file, LANG.get("OPEN_FILE"))
     # 保存
     ico_save = ImageTk.PhotoImage(file = settings.resource_path("icon/saveFile.bmp"))
-    btn_save = tk.Button(frame_toolbar, command = file_save, image = ico_save)
+    btn_save = tk.Button(frame_toolbar, command = MPPP.file_save, image = ico_save)
     btn_save.image = ico_save
+    MPPP.CreateToolTip(btn_save, LANG.get("SAVE_FILE"))
     # ファイル閉じる(留意事項README.mdにありんす)
     ico_close = ImageTk.PhotoImage(file = settings.resource_path("icon/closeFile.bmp"))
-    btn_close = tk.Button(frame_toolbar, command = ShortCut.close_file, image = ico_close)
+    btn_close = tk.Button(frame_toolbar, command = MPPP.close_file, image = ico_close)
     btn_close.image = ico_close
+    MPPP.CreateToolTip(btn_close, LANG.get("CLOSE"))
     
     #-------------------------
     # ボタンをフレームに配置
