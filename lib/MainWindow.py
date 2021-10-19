@@ -26,7 +26,9 @@ def setFileMenu():
     filemenu.add_command(
         label=f'{LANG.get("OPEN_FILE")}', command=MPPP.open_text)
     filemenu.add_command(
-        label=f'{LANG.get("SAVE_NEW_FILE")}', command=MPPP.file_save)
+        label=f'{LANG.get("SAVE_FILE")}', command=MPPP.file_save)
+    filemenu.add_command(
+        label=f'{LANG.get("SAVE_NEW_FILE")}', command=MPPP.file_new_save)
     # セパレーター
     filemenu.add_separator()
     filemenu.add_command(

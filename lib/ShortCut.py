@@ -7,44 +7,17 @@ from lib import MainWindow
 from lib import language as LANG
 from lib import MotePadPlusPlus as MPPP
 
-def close_file(index = -1):
-    if index == -1:
-        index = Var.notebook.tabs().index(Var.notebook.select())
-    idx = index
-    frame = Var.tframes[idx]
-    name = Var.fnames[idx]
-    Var.notebook.forget(idx)
-    Var.tframes.remove(frame)
-    Var.fnames.remove(name)
-    # frame.destroy()
-    Var.notebook.event_generate("<<NotebookTabClosed>>")
-    if len(Var.tframes) < 1:
-        MPPP.add_tab()
-
-def open_text():
-    typ = [(f'{LANG.get("TEXT_FILES")}', '*.txt')]
-    filepath = askopenfilename(filetypes=typ)
-    if not filepath:
-        return
-    MPPP.add_tab(filepath)
-
-def file_save():
-    typ = [(f'{LANG.get("TEXT_FILES")}', '*.txt')]
-    idx = Var.notebook.tabs().index(Var.notebook.select())
-    tframe = Var.tframes[idx]
-    fname = Var.fnames[idx]
-    filepath = asksaveasfilename(defaultextension='txt', filetypes=typ, initialfile=fname)
-    if not filepath:
-        return
-    with open(filepath, 'w') as save_file:
-        text = tframe.text.get('1.0', tk.END)
-        save_file.write(text)
-
 def ctrl_w(event):
     MPPP.close_file()
         
 def ctrl_n(event):
     MPPP.add_tab()
+
+def ctrl_s(event):
+    MPPP.file_save()
+
+def ctrl_alt_s(event):
+    MPPP.file_new_save()
     
 def binds():
     Var.root.bind("<Control-q>", sys.exit)
@@ -55,3 +28,9 @@ def binds():
     
     Var.root.bind("<Control-n>", ctrl_n)
     Var.root.bind("<Control-N>", ctrl_n)
+    
+    Var.root.bind("<Control-s>", ctrl_s)
+    Var.root.bind("<Control-S>", ctrl_s)
+
+    Var.root.bind("<Control-Alt-s>", ctrl_alt_s)
+    Var.root.bind("<Control-Alt-S>", ctrl_alt_s)

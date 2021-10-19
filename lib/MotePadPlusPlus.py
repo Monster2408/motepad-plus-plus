@@ -124,9 +124,21 @@ class CustomFrame(tk.Frame):
         self.text.bind("<Enter>", self.enter)
         self.text.bind("<Leave>", self.leave)
         self.text.bind("<Control-MouseWheel>", self.zoom_ctrl)
+        self.bind_all('<KeyPress>', self._beenModified)
+        self.beforeText = text.get(0.0,tk.END)
+        self.editNow = False
+
+    def _beenModified(self, event=None):
+        if self.beforeText == self.text.get(0.0,tk.END):
+            return
+        self.beforeText = self.text.get(0.0,tk.END)
+        self.editNow = True
+        #self.beenModified(event)
     
-    def getText(self) -> tk.Text:
-        return self.text
+    def saved(self):
+        """保存時にこの関数を実行する
+        """        
+        self.editNow = False
         
     def enter(self, event):
         Var.frame_hover_now = True
@@ -214,17 +226,32 @@ def open_text():
         return
     add_tab(filepath)
 
-def file_save():
+def file_new_save():
+    file_save(True)
+
+def file_save(rename = False):
     typ = [(f'{LANG.get("TEXT_FILES")}', '*.txt')]
     idx = Var.notebook.tabs().index(Var.notebook.select())
     tframe = Var.tframes[idx]
     fname = Var.fnames[idx]
-    filepath = asksaveasfilename(defaultextension='txt', filetypes=typ, initialfile=fname)
+    if rename == False and os.path.exists(fname):
+        with open(fname, 'w') as save_file:
+            text = tframe.text.get('1.0', tk.END+"-1c")
+            save_file.write(text)
+            Var.tframes[idx].saved()
+        return
+    dirname = os.path.dirname(fname)
+    basename = os.path.basename(fname)
+    filepath = asksaveasfilename(defaultextension='txt', filetypes=typ, initialfile=basename, initialdir=dirname)
     if not filepath:
         return
     with open(filepath, 'w') as save_file:
-        text = tframe.text.get('1.0', tk.END)
+        text = tframe.text.get('1.0', tk.END+"-1c")
         save_file.write(text)
+        Var.tframes[idx].saved()
+        if basename != fname:
+            Var.fnames[idx] = filepath
+            Var.notebook.tab(Var.notebook.select(), text=basename)
         
 def add_tab(fname = None): 
     """新規作成用
