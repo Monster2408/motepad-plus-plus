@@ -53,6 +53,14 @@ LANGUAGE_DIST = {
         "JP": "閉じる",
         "US": "Close"
     },
+    "ZOOM_IN": { 
+        "JP": "拡大表示",
+        "US": "Zoom in"
+    },
+    "ZOOM_OUT": { 
+        "JP": "縮小表示",
+        "US": "Zoom out"
+    },
 }
 
 

@@ -5,6 +5,7 @@ import tkinter as tk
 from lib import Var
 from lib import MainWindow
 from lib import language as LANG
+from lib import MotePadPlusPlus as MPPP
 
 def close_file(index = -1):
     if index == -1:
@@ -18,14 +19,14 @@ def close_file(index = -1):
     # frame.destroy()
     Var.notebook.event_generate("<<NotebookTabClosed>>")
     if len(Var.tframes) < 1:
-        MainWindow.add_tab()
+        MPPP.add_tab()
 
 def open_text():
     typ = [(f'{LANG.get("TEXT_FILES")}', '*.txt')]
     filepath = askopenfilename(filetypes=typ)
     if not filepath:
         return
-    MainWindow.add_tab(filepath)
+    MPPP.add_tab(filepath)
 
 def file_save():
     typ = [(f'{LANG.get("TEXT_FILES")}', '*.txt')]
@@ -40,10 +41,10 @@ def file_save():
         save_file.write(text)
 
 def ctrl_w(event):
-    close_file()
+    MPPP.close_file()
         
 def ctrl_n(event):
-    MainWindow.add_tab()
+    MPPP.add_tab()
     
 def binds():
     Var.root.bind("<Control-q>", sys.exit)

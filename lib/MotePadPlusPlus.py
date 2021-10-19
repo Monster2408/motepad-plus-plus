@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter.filedialog import askopenfilename, asksaveasfilename
+import os
 
 from lib import Var
 from lib import MainWindow
@@ -106,7 +107,7 @@ class CustomNotebook(ttk.Notebook):
 class CustomFrame(tk.Frame):
     def __init__(self,master):
         super().__init__(master)
-        text = tk.Text(self,wrap='none',undo=True)
+        text = tk.Text(self,wrap='none',undo=True,font=(Var.font, Var.text_size))
         x_sb = tk.Scrollbar(self,orient='horizontal')
         y_sb = tk.Scrollbar(self,orient='vertical')
         x_sb.config(command=text.xview)
@@ -120,6 +121,24 @@ class CustomFrame(tk.Frame):
         self.text = text
         self.x_sb = x_sb
         self.y_sb = y_sb
+        self.text.bind("<Enter>", self.enter)
+        self.text.bind("<Leave>", self.leave)
+        self.text.bind("<Control-MouseWheel>", self.zoom_ctrl)
+    
+    def getText(self) -> tk.Text:
+        return self.text
+        
+    def enter(self, event):
+        Var.frame_hover_now = True
+
+    def leave(self, event):
+        Var.frame_hover_now = False
+    
+    def zoom_ctrl(self, event):
+        if event.delta > 0:
+            zoomIn()
+        else:
+            zoomOut()
         
 class CreateToolTip(object):
     """
@@ -132,7 +151,6 @@ class CreateToolTip(object):
         self.text = text
         self.widget.bind("<Enter>", self.enter)
         self.widget.bind("<Leave>", self.leave)
-        self.widget.bind("<ButtonPress>", self.leave)
         self.id = None
         self.tw = None
 
@@ -187,14 +205,14 @@ def close_file(index = -1):
     # frame.destroy()
     Var.notebook.event_generate("<<NotebookTabClosed>>")
     if len(Var.tframes) < 1:
-        MainWindow.add_tab()
+        add_tab()
 
 def open_text():
     typ = [(f'{LANG.get("TEXT_FILES")}', '*.txt')]
     filepath = askopenfilename(filetypes=typ)
     if not filepath:
         return
-    MainWindow.add_tab(filepath)
+    add_tab(filepath)
 
 def file_save():
     typ = [(f'{LANG.get("TEXT_FILES")}', '*.txt')]
@@ -207,3 +225,54 @@ def file_save():
     with open(filepath, 'w') as save_file:
         text = tframe.text.get('1.0', tk.END)
         save_file.write(text)
+        
+def add_tab(fname = None): 
+    """新規作成用
+
+    Args:
+        fname (string): [description]. ファイル名またはファイルパス
+    """
+    if fname == None:
+        new_file_num = 1
+        if len(Var.fnames) > 0:
+            while True:
+                if f'{LANG.get("NEW_FILE_NAME")}{str(new_file_num)}' not in Var.fnames:
+                    break
+                new_file_num += 1
+        fname = f'{LANG.get("NEW_FILE_NAME")}{str(new_file_num)}'
+    tframe=CustomFrame(Var.notebook)
+    # tframe.bind("<Enter>", enter)
+    # tframe.bind("<Leave>", leave)
+    Var.tframes.append(tframe)
+    if os.path.isfile(fname):
+        f=open(fname,'r')
+        lines=f.readlines()
+        f.close()
+        for line in lines:
+            tframe.text.insert('end',line)
+    Var.fnames.append(fname)
+    title=os.path.basename(fname)
+    
+    Var.notebook.add(tframe,text=title)
+    Var.notebook.select(Var.notebook.tabs()[Var.notebook.index('end')-1])
+
+def zoom(scale: int):
+    size = Var.text_size
+    size += scale
+    if Var.MINIMUMTEXTSIZE >= size or Var.MAXTEXTSIZE <= size:
+        return
+    
+    Var.text_size += scale
+    for frame in Var.tframes:
+        txt = ''
+        if frame.text != None:
+            txt = frame.text.get(0.0,tk.END+"-1c")
+        frame.text.delete(0.0,tk.END)
+        frame.text.configure(font=(Var.font, Var.text_size))
+        frame.text.insert(0.0,txt)
+
+def zoomIn():
+    zoom(1)
+    
+def zoomOut():
+    zoom(-1)

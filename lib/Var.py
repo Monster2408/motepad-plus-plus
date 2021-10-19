@@ -8,6 +8,9 @@ menubar = None
 tframes = None
 fnames = None
 notebook = None
+frame_hover_now = False
+font = 'Courier'
+text_size = 10
 
 # 設定データを保存する用のもの
 # 毎度毎度，ファイルから読み取るのはバカだと思ってしまう癖ありんす
@@ -17,5 +20,7 @@ settings_temp_language = None
 DEFAULT_WIDTH = 1280
 DEFAULT_HEIGHT = 720
 EDITORDISPLAYNAME = "MotePad++"
+MINIMUMTEXTSIZE = 4
+MAXTEXTSIZE = 30
 
 # statusLabel = None

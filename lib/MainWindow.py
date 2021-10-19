@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 from tkinter import messagebox
+from tkinter.ttk import Notebook
 from PIL import ImageTk
 import os
 
@@ -21,7 +22,7 @@ def setFileMenu():
         label=f'{LANG.get("FILE")}', menu=filemenu)
     # ～内容
     filemenu.add_command(
-        label=f'{LANG.get("CREATE_NEW_FILE")}', command=add_tab)
+        label=f'{LANG.get("CREATE_NEW_FILE")}', command=MPPP.add_tab)
     filemenu.add_command(
         label=f'{LANG.get("OPEN_FILE")}', command=MPPP.open_text)
     filemenu.add_command(
@@ -54,7 +55,7 @@ def setToolBar():
     # ボタン
     # 新規作成
     ico_new_file = ImageTk.PhotoImage(file = settings.resource_path("icon/newFile.bmp"))
-    btn_new_file = tk.Button(frame_toolbar, command = add_tab, image = ico_new_file)
+    btn_new_file = tk.Button(frame_toolbar, command = MPPP.add_tab, image = ico_new_file)
     btn_new_file.image = ico_new_file
     MPPP.CreateToolTip(btn_new_file, LANG.get("CREATE_NEW_FILE"))
     # ファイルを開く
@@ -72,6 +73,16 @@ def setToolBar():
     btn_close = tk.Button(frame_toolbar, command = MPPP.close_file, image = ico_close)
     btn_close.image = ico_close
     MPPP.CreateToolTip(btn_close, LANG.get("CLOSE"))
+    # ズームイン(拡大表示)
+    ico_zoom_in = ImageTk.PhotoImage(file = settings.resource_path("icon/zoomIn.bmp"))
+    btn_zoom_in = tk.Button(frame_toolbar, image = ico_zoom_in, command=MPPP.zoomIn)
+    btn_zoom_in.image = ico_zoom_in
+    MPPP.CreateToolTip(btn_zoom_in, LANG.get("ZOOM_IN"))
+    # ズームアウト(縮小表示)
+    ico_zoom_out = ImageTk.PhotoImage(file = settings.resource_path("icon/zoomOut.bmp"))
+    btn_zoom_out = tk.Button(frame_toolbar, image = ico_zoom_out, command=MPPP.zoomOut)
+    btn_zoom_out.image = ico_zoom_out
+    MPPP.CreateToolTip(btn_zoom_out, LANG.get("ZOOM_OUT"))
     
     #-------------------------
     # ボタンをフレームに配置
@@ -79,6 +90,8 @@ def setToolBar():
     btn_open_file.pack(side = tk.LEFT) 
     btn_save.pack(side = tk.LEFT)
     btn_close.pack(side = tk.LEFT)
+    btn_zoom_in.pack(side = tk.LEFT)
+    btn_zoom_out.pack(side = tk.LEFT)
     
 def setStatusBar():
     #---------------------------------------
@@ -106,14 +119,15 @@ def start():
     
     Var.root.geometry(f'{Var.DEFAULT_WIDTH}x{Var.DEFAULT_HEIGHT}')
     
+    Var.tframes = []
+    Var.fnames = []
+    
     setToolBar()
     setStatusBar()
     
     Var.notebook = MPPP.CustomNotebook(height=Var.DEFAULT_HEIGHT, width=Var.DEFAULT_WIDTH)
     Var.notebook.pack(fill="both", expand=True)
-    Var.tframes = []
-    Var.fnames = []
-    add_tab()
+    MPPP.add_tab()
     
     # メニューバーの作成
     Var.menubar = tk.Menu(Var.root)
@@ -137,30 +151,3 @@ def restart():
     else:
         Var.optionWindow.destroy()
         OpWin.clearVariables()
-        
-def add_tab(fname = None): 
-    """新規作成用
-
-    Args:
-        fname (string): [description]. ファイル名またはファイルパス
-    """
-    if fname == None:
-        new_file_num = 1
-        if len(Var.fnames) > 0:
-            while True:
-                if f'{LANG.get("NEW_FILE_NAME")}{str(new_file_num)}' not in Var.fnames:
-                    break
-                new_file_num += 1
-        fname = f'{LANG.get("NEW_FILE_NAME")}{str(new_file_num)}'
-    tframe=MPPP.CustomFrame(Var.notebook)
-    Var.tframes.append(tframe)
-    if os.path.isfile(fname):
-        f=open(fname,'r')
-        lines=f.readlines()
-        f.close()
-        for line in lines:
-            tframe.text.insert('end',line)
-    Var.fnames.append(fname)
-    title=os.path.basename(fname)
-    Var.notebook.add(tframe,text=title)
-    Var.notebook.select(Var.notebook.tabs()[Var.notebook.index('end')-1])
