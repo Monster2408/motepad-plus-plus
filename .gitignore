@@ -8,3 +8,4 @@ user
 test.py
 git-hide_*
 lib/example/
+.vscode/
