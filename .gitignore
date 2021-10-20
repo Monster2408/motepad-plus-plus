@@ -7,5 +7,4 @@ user
 *.spec
 test.py
 git-hide_*
-lib/example/
 .vscode/

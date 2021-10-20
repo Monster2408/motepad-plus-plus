@@ -16,11 +16,10 @@ def resource_path(relative_path):
     """ツールバーぼアイコンには必ず'icon_'とファイル名の冒頭につけてください
     
     ※デバッグ時に上手く表示されなくなります。
-    """    
+    """
+    relative_path = relative_path.replace("/", os.sep)
     if hasattr(sys, '_MEIPASS'):
         return os.path.join(sys._MEIPASS, relative_path)
-    if relative_path.startswith("icon_"):
-        relative_path = "icon/"+relative_path
     return os.path.join(os.path.abspath("./resources/"), relative_path)
 
 def checkUserFile(filename: str):

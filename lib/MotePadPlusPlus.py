@@ -2,9 +2,10 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 import os
+import base64
 
 from lib import Var
-from lib import MainWindow
+from lib import settings
 from lib import language as LANG
 
 class CustomNotebook(ttk.Notebook):
@@ -24,7 +25,6 @@ class CustomNotebook(ttk.Notebook):
 
         self.bind("<ButtonPress-1>", self.on_close_press, True)
         self.bind("<ButtonRelease-1>", self.on_close_release)
-        self.bind("<<NotebookTabChanged>>", self.on_change_select_tab)
 
     def on_close_press(self, event):
         """Called when the button is pressed over the close button"""
@@ -54,33 +54,29 @@ class CustomNotebook(ttk.Notebook):
 
         self.state(["!pressed"])
         self._active = None
-            
-    def on_change_select_tab(self, event):
-        pass
 
     def __initialize_custom_style(self):
+        img_close = image_file_to_base64(settings.resource_path("icon/tab/closeTabButton.gif"))
+        img_closehover = image_file_to_base64(settings.resource_path("icon/tab/closeTabButton_hover.gif"))
+        img_closepressed = image_file_to_base64(settings.resource_path("icon/tab/closeTabButton_push.gif"))
+        img_closeintact = image_file_to_base64(settings.resource_path("icon/tab/closeTabButton_inact.gif"))
+        
         style = ttk.Style()
         self.images = (
             # 
-            tk.PhotoImage("img_close", data='''
-                R0lGODlhCAAIAMIBAAAAADs7O4+Pj9nZ2Ts7Ozs7Ozs7Ozs7OyH+EUNyZWF0ZWQg
-                d2l0aCBHSU1QACH5BAEKAAQALAAAAAAIAAgAAAMVGDBEA0qNJyGw7AmxmuaZhWEU
-                5kEJADs=
-            '''),
-            tk.PhotoImage("img_closehover", data='''
-                R0lGODlhCAAIAMIEAAAAAP/SAP/bNNnZ2cbGxsbGxsbGxsbGxiH5BAEKAAQALAAA
-                AAAIAAgAAAMVGDBEA0qNJyGw7AmxmuaZhWEU5kEJADs=
-            '''),
-            tk.PhotoImage("img_closepressed", data='''
-                R0lGODlhCAAIAMIEAAAAAOUqKv9mZtnZ2Ts7Ozs7Ozs7Ozs7OyH+EUNyZWF0ZWQg
-                d2l0aCBHSU1QACH5BAEKAAQALAAAAAAIAAgAAAMVGDBEA0qNJyGw7AmxmuaZhWEU
-                5kEJADs=
-            ''')
+            tk.PhotoImage("img_close", data=img_close),
+            tk.PhotoImage("img_closehover", data=img_closehover),
+            tk.PhotoImage("img_closepressed", data=img_closepressed),
+            tk.PhotoImage("img_closeintact", data=img_closeintact)
         )
 
-        style.element_create("close", "image", "img_close",
-                            ("active", "pressed", "!disabled", "img_closepressed"),
-                            ("active", "!disabled", "img_closehover"), border=8, sticky='')
+        style.element_create(
+            "close", "image", "img_close",
+            ("!active", "!selected", "img_closeintact"),
+            ("active", "pressed", "!disabled", "img_closepressed"),
+            ("active", "!disabled", "img_closehover"), 
+            border=8, sticky=''
+        )
         style.layout("CustomNotebook", [("CustomNotebook.client", {"sticky": "nswe"})])
         style.layout("CustomNotebook.Tab", [
             ("CustomNotebook.tab", {
@@ -125,6 +121,7 @@ class CustomFrame(tk.Frame):
         self.text.bind("<Leave>", self.leave)
         self.text.bind("<Control-MouseWheel>", self.zoom_ctrl)
         self.bind_all('<KeyPress>', self._beenModified)
+        self.bind("<<SaveFrameText>>", self.printer)
         self.beforeText = text.get(0.0,tk.END)
         self.editNow = False
 
@@ -133,12 +130,16 @@ class CustomFrame(tk.Frame):
             return
         self.beforeText = self.text.get(0.0,tk.END)
         self.editNow = True
-        #self.beenModified(event)
+        self.event_generate("<<ChangeFrameText>>")
     
     def saved(self):
         """保存時にこの関数を実行する
         """        
         self.editNow = False
+        self.event_generate("<<SaveFrameText>>")
+    
+    def printer(self, event):
+        print("foo")
         
     def enter(self, event):
         Var.frame_hover_now = True
@@ -297,6 +298,11 @@ def zoom(scale: int):
         frame.text.delete(0.0,tk.END)
         frame.text.configure(font=(Var.font, Var.text_size))
         frame.text.insert(0.0,txt)
+
+def image_file_to_base64(file_path):
+    with open(file_path, "rb") as image_file:
+        data = base64.b64encode(image_file.read())
+    return data.decode('utf-8')
 
 def zoomIn():
     zoom(1)
