@@ -60,6 +60,8 @@ class CustomNotebook(ttk.Notebook):
         img_closehover = image_file_to_base64(settings.resource_path("icon/tab/closeTabButton_hover.gif"))
         img_closepressed = image_file_to_base64(settings.resource_path("icon/tab/closeTabButton_push.gif"))
         img_closeintact = image_file_to_base64(settings.resource_path("icon/tab/closeTabButton_inact.gif"))
+        img_tab_icon = image_file_to_base64(settings.resource_path("icon/tab/saved.gif"))
+        img_tab_icon_unsaved = image_file_to_base64(settings.resource_path("icon/tab/unsaved.gif"))
         
         style = ttk.Style()
         self.images = (
@@ -67,7 +69,9 @@ class CustomNotebook(ttk.Notebook):
             tk.PhotoImage("img_close", data=img_close),
             tk.PhotoImage("img_closehover", data=img_closehover),
             tk.PhotoImage("img_closepressed", data=img_closepressed),
-            tk.PhotoImage("img_closeintact", data=img_closeintact)
+            tk.PhotoImage("img_closeintact", data=img_closeintact),
+            tk.PhotoImage("img_tab_icon", data=img_tab_icon),
+            tk.PhotoImage("img_tab_icon_unsaved", data=img_tab_icon_unsaved),
         )
 
         style.element_create(
@@ -75,6 +79,12 @@ class CustomNotebook(ttk.Notebook):
             ("!active", "!selected", "img_closeintact"),
             ("active", "pressed", "!disabled", "img_closepressed"),
             ("active", "!disabled", "img_closehover"), 
+            border=8, sticky=''
+        )
+        style.element_create(
+            "tab_icon", "image", "img_tab_icon",
+            ("active", "img_tab_icon"),
+            ("!active", "img_tab_icon_unsaved"),
             border=8, sticky=''
         )
         style.layout("CustomNotebook", [("CustomNotebook.client", {"sticky": "nswe"})])
@@ -90,6 +100,7 @@ class CustomNotebook(ttk.Notebook):
                                 "side": "top",
                                 "sticky": "nswe",
                                 "children": [
+                                    ("CustomNotebook.tab_icon", {"side": "left", "sticky": ''}),
                                     ("CustomNotebook.label", {"side": "left", "sticky": ''}),
                                     ("CustomNotebook.close", {"side": "left", "sticky": ''}),
                                 ]
@@ -122,6 +133,7 @@ class CustomFrame(tk.Frame):
         self.text.bind("<Control-MouseWheel>", self.zoom_ctrl)
         self.bind_all('<KeyPress>', self._beenModified)
         self.bind("<<SaveFrameText>>", self.printer)
+        self.bind("<<ChangeFrameText>>", self.printer)
         self.beforeText = text.get(0.0,tk.END)
         self.editNow = False
 
@@ -252,7 +264,7 @@ def file_save(rename = False):
         Var.tframes[idx].saved()
         if basename != fname:
             Var.fnames[idx] = filepath
-            Var.notebook.tab(Var.notebook.select(), text=basename)
+            Var.notebook.tab(Var.notebook.select(), text=f" {basename}")
         
 def add_tab(fname = None): 
     """新規作成用
@@ -281,7 +293,7 @@ def add_tab(fname = None):
     Var.fnames.append(fname)
     title=os.path.basename(fname)
     
-    Var.notebook.add(tframe,text=title)
+    Var.notebook.add(tframe,text=f" {title}")
     Var.notebook.select(Var.notebook.tabs()[Var.notebook.index('end')-1])
 
 def zoom(scale: int):
