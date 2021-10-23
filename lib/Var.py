@@ -23,4 +23,7 @@ EDITORDISPLAYNAME = "MotePad++"
 MINIMUMTEXTSIZE = 4
 MAXTEXTSIZE = 30
 
+
+tab_filename_startsspace = False
+
 # statusLabel = None

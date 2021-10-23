@@ -104,12 +104,12 @@ class CustomNotebook(ttk.Notebook):
                                     ("CustomNotebook.label", {"side": "left", "sticky": ''}),
                                     ("CustomNotebook.close", {"side": "left", "sticky": ''}),
                                 ]
-                        })
-                    ]
-                })
-            ]
-        })
-    ])
+                            })
+                        ]
+                    })
+                ]
+            })
+        ])
 
 class CustomFrame(tk.Frame):
     def __init__(self,master):
@@ -264,7 +264,9 @@ def file_save(rename = False):
         Var.tframes[idx].saved()
         if basename != fname:
             Var.fnames[idx] = filepath
-            Var.notebook.tab(Var.notebook.select(), text=f" {basename}")
+            
+            if Var.tab_filename_startsspace: Var.notebook.tab(Var.notebook.select(), text=f" {basename}")
+            else: Var.notebook.tab(Var.notebook.select(), text=basename)
         
 def add_tab(fname = None): 
     """新規作成用
@@ -293,7 +295,8 @@ def add_tab(fname = None):
     Var.fnames.append(fname)
     title=os.path.basename(fname)
     
-    Var.notebook.add(tframe,text=f" {title}")
+    if Var.tab_filename_startsspace: Var.notebook.add(tframe,text=f" {title}")
+    else: Var.notebook.add(tframe,text=title)
     Var.notebook.select(Var.notebook.tabs()[Var.notebook.index('end')-1])
 
 def zoom(scale: int):

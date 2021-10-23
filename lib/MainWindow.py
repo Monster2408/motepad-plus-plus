@@ -128,6 +128,7 @@ def start():
     setStatusBar()
     
     Var.notebook = MPPP.CustomNotebook(height=Var.DEFAULT_HEIGHT, width=Var.DEFAULT_WIDTH)
+    Var.notebook.enable_traversal()
     Var.notebook.pack(fill="both", expand=True)
     MPPP.add_tab()
     
