@@ -22,10 +22,33 @@ class CustomNotebook(ttk.Notebook):
         ttk.Notebook.__init__(self, *args, **kwargs)
 
         self._active = None
+        self._saved = True
 
         self.bind("<ButtonPress-1>", self.on_close_press, True)
         self.bind("<ButtonRelease-1>", self.on_close_release)
         self.bind("<Motion>", self.on_close_motion)
+
+        self.bind("<<SaveRenameFile>>", self.save_motion)
+        self.bind("<<SaveFile>>", self.save_motion)
+        self.bind("<<ChangeFrameText>>", self.edit_motion)
+        
+        self.bind("<<ChangeFrameText>>", self.tab_change_motion)
+
+    def tab_change_motion(self, event=None):
+        # key = self.images[4]
+        # if not self._saved:
+        #     self.images[4] = tk.PhotoImage(f"{key}", self.img_tab_icon_unsaved)
+        # else:
+        #     self.images[4] = tk.PhotoImage(f"{key}", self.img_tab_icon)
+        pass
+
+    def save_motion(self, event):
+        self._saved = True
+        self.tab_change_motion()
+
+    def edit_motion(self, event):
+        self._saved = False
+        self.tab_change_motion()
 
     def on_close_motion(self, event):
         element = self.identify(event.x, event.y)
@@ -38,7 +61,7 @@ class CustomNotebook(ttk.Notebook):
 
     def on_close_press(self, event):
         """Called when the button is pressed over the close button"""
-
+        self.tab_change_motion()
         element = self.identify(event.x, event.y)
 
         if "close" in element:
@@ -50,6 +73,10 @@ class CustomNotebook(ttk.Notebook):
 
     def on_close_release(self, event):
         """Called when the button is released"""
+        if not self._saved:
+            self.state(['!focus'])
+        else:
+            self.state(['focus'])
         if not self.instate(['pressed']) and not self.instate(['hover']):
             return
 
@@ -74,8 +101,8 @@ class CustomNotebook(ttk.Notebook):
         img_closehover = image_file_to_base64(settings.resource_path("icon/tab/closeTabButton_hover.gif"))
         img_closepressed = image_file_to_base64(settings.resource_path("icon/tab/closeTabButton_push.gif"))
         img_closeintact = image_file_to_base64(settings.resource_path("icon/tab/closeTabButton_inact.gif"))
-        img_tab_icon = image_file_to_base64(settings.resource_path("icon/tab/saved.gif"))
-        img_tab_icon_unsaved = image_file_to_base64(settings.resource_path("icon/tab/unsaved.gif"))
+        self.img_tab_icon = image_file_to_base64(settings.resource_path("icon/tab/saved.gif"))
+        self.img_tab_icon_unsaved = image_file_to_base64(settings.resource_path("icon/tab/unsaved.gif"))
         
         style = ttk.Style()
         self.images = (
@@ -84,22 +111,22 @@ class CustomNotebook(ttk.Notebook):
             tk.PhotoImage("img_closehover", data=img_closehover),
             tk.PhotoImage("img_closepressed", data=img_closepressed),
             tk.PhotoImage("img_closeintact", data=img_closeintact),
-            tk.PhotoImage("img_tab_icon", data=img_tab_icon),
-            tk.PhotoImage("img_tab_icon_unsaved", data=img_tab_icon_unsaved),
+            tk.PhotoImage("img_tab_icon", data=self.img_tab_icon),
+            tk.PhotoImage("img_tab_icon_unsaved", data=self.img_tab_icon_unsaved),
         )
 
         style.element_create(
             "close", "image", "img_close",
-            ("!active", "!selected", "img_closeintact"),
-            ("active", "!pressed", "hover", "!disabled", "img_closehover"), 
-            ("active", "pressed", "hover", "!disabled", "img_closepressed"),
-            ("active", "!pressed", "!hover", "!disabled", "img_close"), 
+            ("!active", "!selected", "!pressed", "!hover", "!disabled", "img_closeintact"),
+            ("!active", "!selected", "!pressed", "hover", "!disabled", "img_closehover"), 
+            ("!active", "!selected", "pressed", "hover", "!disabled", "img_closepressed"),
+            ("active", "selected", "!pressed", "hover", "!disabled", "img_closehover"), 
+            ("active", "selected", "pressed", "hover", "!disabled", "img_closepressed"),
+            ("active", "selected", "!pressed", "!hover", "!disabled", "img_close"), 
             border=8, sticky=''
         )
         style.element_create(
             "tab_icon", "image", "img_tab_icon",
-            ("active", "img_tab_icon"),
-            ("!active", "img_tab_icon_unsaved"),
             border=8, sticky=''
         )
         style.layout("CustomNotebook", [("CustomNotebook.client", {"sticky": "nswe"})])
@@ -159,7 +186,7 @@ class CustomFrame(tk.Frame):
         self.editNow = True
         self.event_generate("<<ChangeFrameText>>")
     
-    def saved(self):
+    def saved(self, event):
         """保存時にこの関数を実行する
         """
         self.editNow = False
@@ -264,7 +291,6 @@ def file_save(rename = False):
         with open(fname, 'w') as save_file:
             text = tframe.text.get('1.0', tk.END+"-1c")
             save_file.write(text)
-            Var.tframes[idx].saved()
             Var.tframes[idx].event_generate("<<SaveFile>>")
         return
     dirname = os.path.dirname(fname)
@@ -276,7 +302,6 @@ def file_save(rename = False):
     with open(filepath, 'w') as save_file:
         text = tframe.text.get('1.0', tk.END+"-1c")
         save_file.write(text)
-        Var.tframes[idx].saved()
         if basename != fname:
             Var.fnames[idx] = filepath
             Var.tframes[idx].event_generate("<<SaveRenameFile>>")
@@ -317,6 +342,7 @@ def add_tab(fname = None):
     
     Var.notebook.state(["!pressed"])
     Var.notebook.state(["!hover"])
+    Var.notebook.state(["focus"])
 
 def zoom(scale: int):
     size = Var.text_size
