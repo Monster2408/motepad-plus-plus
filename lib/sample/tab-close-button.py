@@ -85,10 +85,7 @@ class CustomNotebook(ttk.Notebook):
                                 "sticky": "nswe",
                                 "children": [
                                     ("CustomNotebook.label", {"side": "left", "sticky": ''}),
-                                    ("CustomNotebook.close.focus", {
-                                        "side": "left", 
-                                        "sticky": ''
-                                    }),
+                                    ("CustomNotebook.close", {"side": "left", "sticky": ''}),
                                 ]
                         })
                     ]

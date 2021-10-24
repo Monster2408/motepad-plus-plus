@@ -25,6 +25,16 @@ class CustomNotebook(ttk.Notebook):
 
         self.bind("<ButtonPress-1>", self.on_close_press, True)
         self.bind("<ButtonRelease-1>", self.on_close_release)
+        self.bind("<Motion>", self.on_close_motion)
+
+    def on_close_motion(self, event):
+        element = self.identify(event.x, event.y)
+        if "close" in element:
+            self.state(['!pressed'])
+            self.state(['hover'])
+        else:
+            self.state(['!pressed'])
+            self.state(['!hover'])
 
     def on_close_press(self, event):
         """Called when the button is pressed over the close button"""
@@ -34,17 +44,20 @@ class CustomNotebook(ttk.Notebook):
         if "close" in element:
             index = self.index("@%d,%d" % (event.x, event.y))
             self.state(['pressed'])
+            self.state(['hover'])
             self._active = index
             return "break"
 
     def on_close_release(self, event):
         """Called when the button is released"""
-        if not self.instate(['pressed']):
+        if not self.instate(['pressed']) and not self.instate(['hover']):
             return
 
         element =  self.identify(event.x, event.y)
         if "close" not in element:
             # user moved the mouse off of the close button
+            self.state(['!pressed'])
+            self.state(['!hover'])
             return
 
         index = self.index("@%d,%d" % (event.x, event.y))
@@ -53,6 +66,7 @@ class CustomNotebook(ttk.Notebook):
             close_file(index)
 
         self.state(["!pressed"])
+        self.state(['!hover'])
         self._active = None
 
     def __initialize_custom_style(self):
@@ -77,8 +91,9 @@ class CustomNotebook(ttk.Notebook):
         style.element_create(
             "close", "image", "img_close",
             ("!active", "!selected", "img_closeintact"),
-            ("active", "pressed", "!disabled", "img_closepressed"),
-            ("active", "!disabled", "img_closehover"), 
+            ("active", "!pressed", "hover", "!disabled", "img_closehover"), 
+            ("active", "pressed", "hover", "!disabled", "img_closepressed"),
+            ("active", "!pressed", "!hover", "!disabled", "img_close"), 
             border=8, sticky=''
         )
         style.element_create(
@@ -132,8 +147,8 @@ class CustomFrame(tk.Frame):
         self.text.bind("<Leave>", self.leave)
         self.text.bind("<Control-MouseWheel>", self.zoom_ctrl)
         self.bind_all('<KeyPress>', self._beenModified)
-        self.bind("<<SaveFrameText>>", self.printer)
-        self.bind("<<ChangeFrameText>>", self.printer)
+        self.bind("<<SaveFile>>", self.saved)
+        self.bind("<<SaveRenameFile>>", self.saved)
         self.beforeText = text.get(0.0,tk.END)
         self.editNow = False
 
@@ -146,12 +161,8 @@ class CustomFrame(tk.Frame):
     
     def saved(self):
         """保存時にこの関数を実行する
-        """        
+        """
         self.editNow = False
-        self.event_generate("<<SaveFrameText>>")
-    
-    def printer(self, event):
-        print("foo")
         
     def enter(self, event):
         Var.frame_hover_now = True
@@ -228,6 +239,8 @@ def close_file(index = -1):
     Var.tframes.remove(frame)
     Var.fnames.remove(name)
     # frame.destroy()
+    Var.notebook.state(["!pressed"])
+    Var.notebook.state(["!hover"])
     Var.notebook.event_generate("<<NotebookTabClosed>>")
     if len(Var.tframes) < 1:
         add_tab()
@@ -252,9 +265,11 @@ def file_save(rename = False):
             text = tframe.text.get('1.0', tk.END+"-1c")
             save_file.write(text)
             Var.tframes[idx].saved()
+            Var.tframes[idx].event_generate("<<SaveFile>>")
         return
     dirname = os.path.dirname(fname)
     basename = os.path.basename(fname)
+    Var.tframes[idx].event_generate("<<SaveFileCheck>>")
     filepath = asksaveasfilename(defaultextension='txt', filetypes=typ, initialfile=basename, initialdir=dirname)
     if not filepath:
         return
@@ -264,9 +279,10 @@ def file_save(rename = False):
         Var.tframes[idx].saved()
         if basename != fname:
             Var.fnames[idx] = filepath
-            
+            Var.tframes[idx].event_generate("<<SaveRenameFile>>")
             if Var.tab_filename_startsspace: Var.notebook.tab(Var.notebook.select(), text=f" {basename}")
             else: Var.notebook.tab(Var.notebook.select(), text=basename)
+        else: Var.tframes[idx].event_generate("<<SaveFile>>")
         
 def add_tab(fname = None): 
     """新規作成用
@@ -298,6 +314,9 @@ def add_tab(fname = None):
     if Var.tab_filename_startsspace: Var.notebook.add(tframe,text=f" {title}")
     else: Var.notebook.add(tframe,text=title)
     Var.notebook.select(Var.notebook.tabs()[Var.notebook.index('end')-1])
+    
+    Var.notebook.state(["!pressed"])
+    Var.notebook.state(["!hover"])
 
 def zoom(scale: int):
     size = Var.text_size
