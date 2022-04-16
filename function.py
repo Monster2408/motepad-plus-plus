@@ -10,9 +10,9 @@ def makeResouceFiles():
     """リソースフォルダを作成"""
     if os.path.exists("./resources") != True:
         os.mkdir("./resources")
-    if os.path.exists("./resources/data.yml") != True:
-        print(resourcePath("resources/data.yml"))
-        shutil.copyfile(resourcePath("resources/data.yml"), "./resources/data.yml")
+    if os.path.exists("./resources/options.yml") != True:
+        print(resourcePath("resources/options.yml"))
+        shutil.copyfile(resourcePath("resources/options.yml"), "./resources/options.yml")
 
 def resourcePath(filename): 
     """内部リソースを取得
