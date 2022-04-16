@@ -34,21 +34,23 @@ def main():
         ['Help',['View Help','---',f'{LANG.get("ABOUT_ME")}']]
     ]
     
-    right_click_menu = ['&Right', [f'{LANG.get("UNDO")}', f'{LANG.get("REDO")}', '切り取り', 'コピー', '貼り付け']]
+    right_click_menu = ['&Right', [f'{LANG.get("UNDO")}', f'{LANG.get("REDO")}', f'{LANG.get("CUT")}', f'{LANG.get("COPY")}', f'{LANG.get("PASTE")}']]
     
     toolbar_buttons = [[
         sg.Button('', image_data=Var.NEW_FILE64[22:], button_color=('white', sg.COLOR_SYSTEM_DEFAULT), key=f'{LANG.get("CREATE_NEW_FILE")}', pad=(0,0)),
-        sg.Button('', image_data=Var.OPEN_FILE64[22:], button_color=('white', sg.COLOR_SYSTEM_DEFAULT), key=f'{LANG.get("OPEN_FILE")}', pad=(0,0))
+        sg.Button('', image_data=Var.OPEN_FILE64[22:], button_color=('white', sg.COLOR_SYSTEM_DEFAULT), key=f'{LANG.get("OPEN_FILE")}', pad=(0,0)),
+        sg.Button('', image_data=Var.UNDO64[22:], button_color=('white', sg.COLOR_SYSTEM_DEFAULT), key=f'{LANG.get("UNDO")}', pad=(0,0)),
+        sg.Button('', image_data=Var.REDO64[22:], button_color=('white', sg.COLOR_SYSTEM_DEFAULT), key=f'{LANG.get("REDO")}', pad=(0,0))
     ]]
     
     layout = [
         [sg.Frame('', toolbar_buttons,title_color='white', pad=(0,0), background_color="#FFFFFF")],
         [sg.Menu(menu_layout, key='menu1')],
         [sg.Multiline(key="note", pad=(0,0), size=(None, 50), expand_x=True, expand_y=True, right_click_menu=right_click_menu)],
-        [sg.StatusBar("行:1 列:1", key="status_bar", expand_y=True, pad=(0,0), background_color="#FFFFFF", text_color="#000000")]
+        [sg.StatusBar(f'{LANG.get("LINE")}:1 {LANG.get("ROW")}:1', key="status_bar", expand_y=True, pad=(0,0), background_color="#FFFFFF", text_color="#000000")]
     ]
 
-    window = sg.Window(Var.TITLE, layout, icon=icon, resizable=True, finalize=True, margins=(0,0), background_color="#FFFFFF")
+    window = sg.Window(Var.TITLE, layout, icon=icon, resizable=True, finalize=True, margins=(0,0), background_color="#FFFFFF", enable_close_attempted_event=True)
     text = window["note"].Widget
     text.configure(undo=True) # Undo機能追加
     text.bind("<Control-Key-Y>", lambda event, text=text:redo(event, text)) #Redo機能追加
@@ -57,8 +59,19 @@ def main():
         event, value = window.Read()
         print(event, value)
 
-        if event in ('_close_', 'Exit', f'{LANG.get("EXIT")}') or event is None:
-            break
+        if event in ('_close_', 'Exit', f'{LANG.get("EXIT")}', "-WINDOW CLOSE ATTEMPTED-") or event is None:
+            confirm_exit = sg.popup_ok_cancel(
+                f'{LANG.get("CLOSE_CHECK")}', 
+                title="MotePad++", 
+                keep_on_top=True, 
+                icon=icon, 
+                background_color="#ffffff", 
+                text_color="#000000", 
+                button_color=("#000", "#fff")
+            )
+
+            if confirm_exit == "OK":
+                break
         
         elif event in (f'{LANG.get("REDO")}'):
             try:

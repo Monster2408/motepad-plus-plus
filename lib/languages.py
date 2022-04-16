@@ -72,6 +72,30 @@ LANGUAGE_DIST = {
     "REDO": {
         "JP": "やり直し    Ctrl+Y",
         "US": "Redo       Ctrl+Y"
+    },
+    "CUT": {
+        "JP": "切り取り",
+        "US": "Cut"
+    },
+    "COPY": {
+        "JP": "コピー",
+        "US": "Copy"
+    },
+    "PASTE": {
+        "JP": "ペースト",
+        "US": "Paste"
+    },
+    "LINE": {
+        "JP": "行",
+        "US": "Line"
+    },
+    "ROW": {
+        "JP": "列",
+        "US": "Row"
+    },
+    "CLOSE_CHECK": {
+        "JP": "MotePad++を閉じますか?",
+        "US": "Do you want to close MotePad++?"
     }
 }
 
